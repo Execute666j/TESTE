@@ -18,6 +18,29 @@ local function ToggleESP()
                 hitbox.Color3 = Color3.fromRGB(255, 255, 0) -- Cor amarela
                 hitbox.Transparency = 0.5
                 hitbox.AlwaysOnTop = true
+
+                -- Adicionando nome do jogador
+                local nameTag = Instance.new("BillboardGui")
+                nameTag.Parent = player.Character
+                nameTag.Adornee = player.Character.HumanoidRootPart
+                nameTag.Size = UDim2.new(0, 200, 0, 50)
+                nameTag.StudsOffset = Vector3.new(0, 2, 0)
+                nameTag.AlwaysOnTop = true
+
+                local nameLabel = Instance.new("TextLabel")
+                nameLabel.Parent = nameTag
+                nameLabel.Size = UDim2.new(1, 0, 1, 0)
+                nameLabel.BackgroundTransparency = 1
+                nameLabel.Text = player.Name
+                nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- Cor branca
+                nameLabel.TextStrokeTransparency = 0 -- Borda no texto
+                nameLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) -- Cor da borda (preta)
+                nameLabel.TextScaled = true
+
+                -- Exibindo a idade da conta
+                local accountAge = player.AccountAge -- Exemplo de como obter a idade da conta
+                print("Jogador: " .. player.Name)
+                print("Idade da Conta: " .. accountAge .. " dias")
             end
         end
     else
@@ -28,6 +51,9 @@ local function ToggleESP()
                 end
                 if player.Character:FindFirstChildOfClass("BoxHandleAdornment") then
                     player.Character:FindFirstChildOfClass("BoxHandleAdornment"):Destroy()
+                end
+                if player.Character:FindFirstChildOfClass("BillboardGui") then
+                    player.Character:FindFirstChildOfClass("BillboardGui"):Destroy()
                 end
             end
         end
