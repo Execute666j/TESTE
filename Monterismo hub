@@ -1,0 +1,99 @@
+-- Inicializando a Biblioteca
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+-- Criando uma Janela
+local Window = OrionLib:MakeWindow({
+    Name = "Monterismo",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "OrionTest",
+    IntroEnabled = true,
+    IntroText = "Bem-vindo ao Monterismo",
+    IntroIcon = "rbxassetid://4483345998"
+})
+
+-- Criando a Aba Principal
+local MainTab = Window:MakeTab({
+    Name = "Trollando web casal",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Criando a Seção de Controles de Voo
+local FlightSection = MainTab:AddSection({
+    Name = "Controles de Voo"
+})
+
+-- Adicionando o Script Fly ao Orion Hub
+FlightSection:AddButton({
+    Name = "Abrir Fly Gui",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/mikeexc/Dsc-Mike-Fly-Gui/main/Fly%20Gui"))()
+    end    
+})
+
+-- Criando a Seção de ESP
+local ESPSection = MainTab:AddSection({
+    Name = "ESP"
+})
+
+-- Adicionando o Script ESP ao Orion Hub
+ESPSection:AddButton({
+    Name = "Ativar ESP",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP?token=GHSAT0AAAAAAC3OQDMUTAWNAOR2DSHPHPTSZ2U7SWA"))()
+    end    
+})
+
+-- Criando a Seção de Lista de Jogadores
+local PlayerListSection = MainTab:AddSection({
+    Name = "Lista de Jogadores"
+})
+
+-- Variável para armazenar o jogador selecionado
+local selectedPlayer = nil
+
+-- Função para listar jogadores
+local function ListPlayers()
+    for _, player in pairs(game.Players:GetPlayers()) do
+        PlayerListSection:AddButton({
+            Name = player.Name,
+            Callback = function()
+                selectedPlayer = player
+                print("Selecionado: " .. player.Name)
+            end
+        })
+    end
+end
+
+-- Botão para atualizar a lista de jogadores
+PlayerListSection:AddButton({
+    Name = "Atualizar Lista de Jogadores",
+    Callback = ListPlayers
+})
+
+-- Atualizar a lista de jogadores ao iniciar
+ListPlayers()
+
+-- Criando a Seção de Teleporte
+local TeleportSection = MainTab:AddSection({
+    Name = "Teleporte"
+})
+
+-- Botão de Teleporte
+TeleportSection:AddButton({
+    Name = "Teleporte para Jogador Selecionado",
+    Callback = function()
+        if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local localPlayer = game.Players.LocalPlayer
+            if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame
+                print("Teleportado para: " .. selectedPlayer.Name)
+            else
+                print("Erro: HumanoidRootPart do jogador local não encontrado.")
+            end
+        else
+            print("Erro: Nenhum jogador selecionado ou HumanoidRootPart do jogador selecionado não encontrado.")
+        end
+    end
+})
