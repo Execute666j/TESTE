@@ -3,7 +3,7 @@ local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shl
 
 -- Criando uma Janela
 local Window = OrionLib:MakeWindow({
-    Name = "Monterismo",
+    Name = "Monterismo Hub",
     HidePremium = false,
     SaveConfig = true,
     ConfigFolder = "OrionTest",
@@ -41,7 +41,7 @@ local ESPSection = MainTab:AddSection({
 ESPSection:AddButton({
     Name = "Ativar ESP",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP?token=GHSAT0AAAAAAC3OQDMUTAWNAOR2DSHPHPTSZ2U7SWA"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP"))()
     end    
 })
 
