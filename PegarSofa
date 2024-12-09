@@ -1,0 +1,9 @@
+local function PegarSofa()
+    local localPlayer = game.Players.LocalPlayer
+    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-86.366, 19.110, -129.395)
+        print("Teleportado para o sofá")
+    else
+        warn("Erro: HumanoidRootPart não encontrado")
+    end
+end
