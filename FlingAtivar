@@ -1,0 +1,30 @@
+local power = 500  -- Força padrão
+local activeFling = false
+local flingForce = nil
+
+local function stopFling()
+    if flingForce and flingForce.Parent then
+        flingForce:Destroy()
+        flingForce = nil
+        activeFling = false
+        print("Fling desativado")
+    end
+end
+
+-- Ativa o Fling
+local character = game.Players.LocalPlayer.Character
+if character and character:FindFirstChild("HumanoidRootPart") then
+    local humanoRootPart = character.HumanoidRootPart
+
+    -- Caso o Fling já esteja ativo, desativa primeiro
+    if activeFling then stopFling() end
+
+    -- Cria o FlingForce e aplica ao HumanoidRootPart
+    flingForce = Instance.new("BodyThrust")
+    flingForce.Parent = humanoRootPart
+    flingForce.Force = Vector3.new(power, 0, power)
+    flingForce.Location = humanoRootPart.Position
+
+    activeFling = true
+    print("Fling ativado")
+end
