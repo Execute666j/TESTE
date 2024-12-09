@@ -1,0 +1,15 @@
+-- Função para copiar coordenadas para a área de transferência
+local function CopyCoordinatesToClipboard()
+    local localPlayer = game.Players.LocalPlayer
+    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local position = localPlayer.Character.HumanoidRootPart.Position
+        local coordinates = "Coordenadas atuais: X=" .. position.X .. " Y=" .. position.Y .. " Z=" .. position.Z
+        setclipboard(coordinates)
+        print(coordinates)
+    else
+        print("Erro: HumanoidRootPart do jogador local não encontrado.")
+    end
+end
+
+-- Ativando a função automaticamente
+CopyCoordinatesToClipboard()
