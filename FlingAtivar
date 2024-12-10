@@ -1,4 +1,4 @@
-local power = 500  -- Força padrão
+local power = 1000  -- Força ajustada para 1000
 local activeFling = false
 local flingForce = nil
 
@@ -22,9 +22,9 @@ if character and character:FindFirstChild("HumanoidRootPart") then
     -- Cria o FlingForce e aplica ao HumanoidRootPart
     flingForce = Instance.new("BodyThrust")
     flingForce.Parent = humanoRootPart
-    flingForce.Force = Vector3.new(power, 0, power)
+    flingForce.Force = Vector3.new(power, 0, power) -- Força aumentada para 1000
     flingForce.Location = humanoRootPart.Position
 
     activeFling = true
-    print("Fling ativado")
+    print("Fling ativado com força de " .. power)
 end
