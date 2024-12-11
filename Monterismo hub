@@ -1,59 +1,36 @@
--- Inicializando a Biblioteca
+-- Carregar biblioteca Orion
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
--- Criando uma Janela
 local Window = OrionLib:MakeWindow({
-    Name = "Monterismo Hub",
+    Name = "Mac Hub",
     HidePremium = false,
     SaveConfig = true,
     ConfigFolder = "OrionTest",
     IntroEnabled = true,
-    IntroText = "Bem-vindo ao Monterismo",
+    IntroText = "Bem-vindo ao Mac Hub",
     IntroIcon = "rbxassetid://4483345998"
 })
 
--- Criando a Aba Principal
 local MainTab = Window:MakeTab({
     Name = "Trollando web casal",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
--- Criando a Seção de Controles de Voo
-local FlightSection = MainTab:AddSection({
-    Name = "Controles de Voo"
+-- Seção Teleporte
+local TeleportSection = MainTab:AddSection({
+    Name = "Teleporte"
 })
 
--- Adicionando o Script Fly ao Orion Hub
-FlightSection:AddButton({
-    Name = "Abrir Fly Gui",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/mikeexc/Dsc-Mike-Fly-Gui/main/Fly%20Gui"))()
-    end    
-})
+-- Variáveis para Flingar
+local flingActive = false
+local selectedPlayer = nil
 
--- Criando a Seção de ESP
-local ESPSection = MainTab:AddSection({
-    Name = "ESP"
-})
-
--- Adicionando o Script ESP ao Orion Hub
-ESPSection:AddButton({
-    Name = "Ativar ESP",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP"))()
-    end    
-})
-
--- Criando a Seção de Lista de Jogadores
+-- Função para listar jogadores
 local PlayerListSection = MainTab:AddSection({
     Name = "Lista de Jogadores"
 })
 
--- Variável para armazenar o jogador selecionado
-local selectedPlayer = nil
-
--- Função para listar jogadores
 local function ListPlayers()
     for _, player in pairs(game.Players:GetPlayers()) do
         PlayerListSection:AddButton({
@@ -66,34 +43,111 @@ local function ListPlayers()
     end
 end
 
--- Botão para atualizar a lista de jogadores
 PlayerListSection:AddButton({
     Name = "Atualizar Lista de Jogadores",
     Callback = ListPlayers
 })
 
--- Atualizar a lista de jogadores ao iniciar
 ListPlayers()
 
--- Criando a Seção de Teleporte
-local TeleportSection = MainTab:AddSection({
-    Name = "Teleporte"
-})
-
--- Botão de Teleporte
+-- Função Flingar
 TeleportSection:AddButton({
-    Name = "Teleporte para Jogador Selecionado",
+    Name = "Flingar",
     Callback = function()
-        if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            local localPlayer = game.Players.LocalPlayer
-            if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame
-                print("Teleportado para: " .. selectedPlayer.Name)
-            else
-                print("Erro: HumanoidRootPart do jogador local não encontrado.")
+        flingActive = not flingActive -- Alterna entre ativar e desativar
+        if flingActive then
+            print("Flingar ativado")
+            
+            -- Ativando o Fling
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/FlingAtivar"))()
+
+            -- Inicia o auto teleporte enquanto o Flingar está ativado
+            while flingActive do
+                if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local localPlayer = game.Players.LocalPlayer
+                    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        -- Teleportar para o jogador selecionado
+                        localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame
+                    end
+                end
+                wait(0.1) -- Delay do loop
             end
         else
-            print("Erro: Nenhum jogador selecionado ou HumanoidRootPart do jogador selecionado não encontrado.")
+            print("Flingar desativado")
         end
     end
 })
+
+-- Seção Fly
+local FlightSection = MainTab:AddSection({
+    Name = "Controles de Voo"
+})
+
+FlightSection:AddButton({
+    Name = "Abrir Fly",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/mikeexc/Dsc-Mike-Fly-Gui/main/Fly%20Gui"))()
+    end
+})
+
+-- Seção ESP
+local ESPSection = MainTab:AddSection({
+    Name = "ESP"
+})
+
+ESPSection:AddButton({
+    Name = "Ativar ESP",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP"))()
+    end
+})
+
+-- Seção Kill
+TeleportSection:AddButton({
+    Name = "Kill",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Kill"))()
+    end
+})
+
+-- Botão Ver Coordenadas
+TeleportSection:AddButton({
+    Name = "Ver Coordenadas",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Ver%20coordenadas"))()
+    end
+})
+
+-- Botão Pegar Sofá
+TeleportSection:AddButton({
+    Name = "Pegar Sofá",
+    Callback = function()
+        local localPlayer = game.Players.LocalPlayer
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-86.366, 19.110, -129.395)
+            print("Teleportado para o sofá")
+        else
+            print("Erro: HumanoidRootPart do jogador local não encontrado.")
+        end
+    end
+})
+
+-- Seção Gerenciamento de Inventário
+local InventorySection = MainTab:AddSection({
+    Name = "Inventário"
+})
+
+InventorySection:AddButton({
+    Name = "Pegar Todos os Itens",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local backpack = player.Backpack
+        for _, item in pairs(backpack:GetChildren()) do
+            item.Parent = player.Character
+        end
+        print("Todos os itens foram movidos para o personagem.")
+    end
+})
+
+-- Iniciar a interface
+OrionLib:Init()
