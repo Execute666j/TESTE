@@ -25,28 +25,44 @@ local Tabs = {
     Settings = Window:AddTab({ Title = "Settings" })
 }
 
--- Adicionar botão de minimizar com logo
+-- Variáveis globais para minimizar/restaurar
+local isMinimized = false
+
+-- Criar o botão de minimizar
 local minimizeButton = Instance.new("ImageButton")
 minimizeButton.Name = "MinimizeButton"
 minimizeButton.Size = UDim2.new(0, 40, 0, 40)
-minimizeButton.Position = UDim2.new(0, 10, 0, 10) -- Ajuste a posição conforme necessário
+minimizeButton.Position = UDim2.new(0, 10, 0, 10)
 minimizeButton.BackgroundTransparency = 1
-minimizeButton.Image = "rbxassetid://9265687331" -- Substitua pelo ID da sua imagem/logo
+minimizeButton.Image = "rbxassetid://9265687331" -- ID da imagem para o botão de minimizar
 minimizeButton.Parent = Window:GetFrame()
 
--- Conexão para minimizar e restaurar a interface
-local isMinimized = false
+-- Criar a imagem que será exibida ao minimizar
+local minimizeImage = Instance.new("ImageLabel")
+minimizeImage.Name = "MinimizeImage"
+minimizeImage.Size = UDim2.new(0, 100, 0, 100)
+minimizeImage.Position = UDim2.new(0, 10, 0, 50)
+minimizeImage.BackgroundTransparency = 1
+minimizeImage.Image = "rbxassetid://9265687331" -- ID da imagem fornecida
+minimizeImage.Visible = false -- Começa invisível
+minimizeImage.Parent = Window:GetFrame()
+
+-- Função para minimizar/restaurar a interface
 minimizeButton.MouseButton1Click:Connect(function()
     if not isMinimized then
+        -- Minimizar: Ocultar a interface principal e mostrar a imagem
         Window:GetFrame().Visible = false
+        minimizeImage.Visible = true
         isMinimized = true
         Fluent:Notify({
             Title = "Interface Minimizada",
-            Content = "Pressione novamente para restaurar.",
+            Content = "Clique novamente para restaurar.",
             Duration = 5
         })
     else
+        -- Restaurar: Mostrar a interface principal e ocultar a imagem
         Window:GetFrame().Visible = true
+        minimizeImage.Visible = false
         isMinimized = false
         Fluent:Notify({
             Title = "Interface Restaurada",
@@ -56,20 +72,17 @@ minimizeButton.MouseButton1Click:Connect(function()
     end
 end)
 
--- Variáveis globais
-local selectedPlayer = nil
-local autoTeleportEnabled = false
-
 -- Função para adicionar Dropdown de Seleção de Jogador
 local function AddPlayerDropdown(tab)
     local Dropdown = tab:AddDropdown("PlayerDropdown", {
         Title = "Selecionar Jogador",
         Description = "Selecione um jogador para teleportar ou flingar.",
-        Values = {},
+        Values = {}, -- Será preenchido dinamicamente
         Multi = false,
         Default = nil
     })
 
+    -- Atualizar valores do Dropdown
     local function UpdatePlayers()
         local players = {}
         for _, player in pairs(game.Players:GetPlayers()) do
@@ -78,10 +91,14 @@ local function AddPlayerDropdown(tab)
         Dropdown:SetValues(players)
     end
 
+    -- Atualizar lista ao carregar
     UpdatePlayers()
+
+    -- Atualizar sempre que um novo jogador entrar
     game.Players.PlayerAdded:Connect(UpdatePlayers)
     game.Players.PlayerRemoving:Connect(UpdatePlayers)
 
+    -- Callback para seleção de jogador
     Dropdown:OnChanged(function(value)
         for _, player in pairs(game.Players:GetPlayers()) do
             if player.Name == value then
@@ -95,7 +112,7 @@ end
 -- Adicionar Dropdown de Seleção na aba Teleport
 AddPlayerDropdown(Tabs.Teleport)
 
--- Botão para teleportar ao jogador selecionado
+-- Botões de Teleporte
 Tabs.Teleport:AddButton({
     Title = "Teleportar",
     Description = "Teleporta até o jogador selecionado.",
@@ -112,49 +129,57 @@ Tabs.Teleport:AddButton({
     end
 })
 
--- Botão Flingar
 Tabs.Teleport:AddButton({
     Title = "Flingar",
     Description = "Flinga o jogador selecionado com auto teleporte.",
     Callback = function()
         if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
             local localPlayer = game.Players.LocalPlayer
-
-            -- Auto Teleporte com delay de 0.1 segundo
-            task.spawn(function()
-                while autoTeleportEnabled do
-                    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                        localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame
-                        print("Teleportado automaticamente para: " .. selectedPlayer.Name)
-                    end
-                    task.wait(0.1)
-                end
-            end)
-
-            -- Executar o comando de Flingar
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/FlingAtivar"))()
-            print("Fling ativado com auto teleporte.")
+            for _ = 1, 10 do
+                localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 5, 0)
+                task.wait(0.1)
+            end
+            print("Fling realizado no jogador: " .. selectedPlayer.Name)
         else
             print("Nenhum jogador selecionado ou jogador inválido.")
         end
     end
 })
 
--- Configuração SaveManager e InterfaceManager
-SaveManager:SetLibrary(Fluent)
-InterfaceManager:SetLibrary(Fluent)
+-- Botões para ESP, Kill e Fly
+Tabs.ESP:AddButton({
+    Title = "Ativar ESP",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP"))()
+        print("ESP ativado.")
+    end
+})
 
-SaveManager:SetFolder("FluentScriptHub")
-InterfaceManager:SetFolder("FluentScriptHub/specific-game")
+Tabs.Kill:AddButton({
+    Title = "Kill",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Kill"))()
+        print("Kill ativado.")
+    end
+})
 
-InterfaceManager:BuildInterfaceSection(Tabs.Settings)
-SaveManager:BuildConfigSection(Tabs.Settings)
+Tabs.Flight:AddButton({
+    Title = "Ativar Fly",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Fly"))()
+        print("Fly ativado.")
+    end
+})
 
-SaveManager:LoadAutoloadConfig()
-
--- Notificar o usuário
-Fluent:Notify({
-    Title = "Fluent",
-    Content = "O script foi carregado corretamente.",
-    Duration = 8
+-- Gerenciamento de Inventário
+Tabs.Inventory:AddButton({
+    Title = "Pegar Todos os Itens",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local backpack = player.Backpack
+        for _, item in pairs(backpack:GetChildren()) do
+            item.Parent = player.Character
+        end
+        print("Itens movidos para o personagem.")
+    end
 })
