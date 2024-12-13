@@ -28,54 +28,79 @@ local Tabs = {
 -- Variável para armazenar jogador selecionado
 local selectedPlayer = nil
 
--- Função para listar jogadores
-local function ListPlayers()
-    for _, player in pairs(game.Players:GetPlayers()) do
-        Tabs.Main:AddButton({
-            Title = player.Name,
-            Description = "Selecionar jogador",
-            Callback = function()
+-- Função para adicionar Dropdown de Seleção de Jogador
+local function AddPlayerDropdown(tab)
+    local Dropdown = tab:AddDropdown("PlayerDropdown", {
+        Title = "Selecionar Jogador",
+        Description = "Selecione um jogador para teleportar ou flingar.",
+        Values = {}, -- Será preenchido dinamicamente
+        Multi = false,
+        Default = nil
+    })
+
+    -- Atualizar valores do Dropdown
+    local function UpdatePlayers()
+        local players = {}
+        for _, player in pairs(game.Players:GetPlayers()) do
+            table.insert(players, player.Name)
+        end
+        Dropdown:SetValues(players)
+    end
+
+    -- Atualizar lista ao carregar
+    UpdatePlayers()
+
+    -- Atualizar sempre que um novo jogador entrar
+    game.Players.PlayerAdded:Connect(UpdatePlayers)
+    game.Players.PlayerRemoving:Connect(UpdatePlayers)
+
+    -- Callback para seleção de jogador
+    Dropdown:OnChanged(function(value)
+        for _, player in pairs(game.Players:GetPlayers()) do
+            if player.Name == value then
                 selectedPlayer = player
                 print("Jogador selecionado: " .. player.Name)
             end
-        })
-    end
+        end
+    end)
 end
 
--- Listar jogadores ao carregar o script
-ListPlayers()
+-- Adicionar Dropdown de Seleção na aba Teleport
+AddPlayerDropdown(Tabs.Teleport)
 
--- Botão Teleporte para o jogador selecionado
+-- Botão para teleportar ao jogador selecionado
 Tabs.Teleport:AddButton({
     Title = "Teleportar",
+    Description = "Teleporta até o jogador selecionado.",
     Callback = function()
         if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
             local localPlayer = game.Players.LocalPlayer
             if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame
-                print("Teleportado para o jogador selecionado")
+                print("Teleportado para o jogador selecionado.")
             end
+        else
+            print("Nenhum jogador selecionado ou jogador inválido.")
         end
     end
 })
 
--- Botão Flingar com Auto Teleporte
+-- Botão para flingar jogador selecionado
 Tabs.Teleport:AddButton({
     Title = "Flingar",
+    Description = "Flinga o jogador selecionado.",
     Callback = function()
         if selectedPlayer then
             local localPlayer = game.Players.LocalPlayer
-
-            -- Teleporta automaticamente ao jogador selecionado
             if selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame
-                print("Teleportado automaticamente para o jogador selecionado antes de Flingar")
-
-                -- Executa o comando de Flingar
+                print("Flingar iniciado.")
                 loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/FlingAtivar"))()
+            else
+                print("Jogador inválido para flingar.")
             end
         else
-            print("Nenhum jogador selecionado")
+            print("Nenhum jogador selecionado.")
         end
     end
 })
@@ -85,6 +110,7 @@ Tabs.ESP:AddButton({
     Title = "Ativar ESP",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP"))()
+        print("ESP ativado.")
     end
 })
 
@@ -93,18 +119,16 @@ Tabs.Kill:AddButton({
     Title = "Kill",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Kill"))()
+        print("Kill ativado.")
     end
 })
 
--- Botão Teleporte para o sofá
-Tabs.Teleport:AddButton({
-    Title = "Pegar Sofá",
+-- Botão Fly
+Tabs.Flight:AddButton({
+    Title = "Ativar Fly",
     Callback = function()
-        local localPlayer = game.Players.LocalPlayer
-        if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-86.366, 19.110, -129.395)
-            print("Teleportado para o sofá")
-        end
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Fly"))()
+        print("Fly ativado.")
     end
 })
 
@@ -117,20 +141,11 @@ Tabs.Inventory:AddButton({
         for _, item in pairs(backpack:GetChildren()) do
             item.Parent = player.Character
         end
-        print("Itens movidos para o personagem")
+        print("Itens movidos para o personagem.")
     end
 })
 
--- Botão Fly
-Tabs.Flight:AddButton({
-    Title = "Ativar Fly",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Fly"))()
-        print("Fly ativado")
-    end
-})
-
--- Configurar SaveManager e InterfaceManager
+-- Configuração SaveManager e InterfaceManager
 SaveManager:SetLibrary(Fluent)
 InterfaceManager:SetLibrary(Fluent)
 
