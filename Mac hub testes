@@ -1,0 +1,151 @@
+-- Carregar a biblioteca Fluent e addons necessários
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+-- Criar a janela principal Fluent
+local Window = Fluent:CreateWindow({
+    Title = "Mac Hub - Fluent",
+    SubTitle = "by dawid",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+-- Criar abas principais
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Teleport = Window:AddTab({ Title = "Teleporte", Icon = "rbxassetid://4483345998" }),
+    ESP = Window:AddTab({ Title = "ESP", Icon = "rbxassetid://4483345998" }),
+    Inventory = Window:AddTab({ Title = "Inventário", Icon = "" }),
+    Kill = Window:AddTab({ Title = "Kill", Icon = "" }),
+    Flight = Window:AddTab({ Title = "Fly", Icon = "" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+-- Variáveis para Flingar
+local flingActive = false
+local selectedPlayer = nil
+
+-- Função para listar jogadores
+local function ListPlayers()
+    for _, player in pairs(game.Players:GetPlayers()) do
+        Tabs.Main:AddButton({
+            Name = player.Name,
+            Callback = function()
+                selectedPlayer = player
+                print("Selecionado: " .. player.Name)
+            end
+        })
+    end
+end
+
+-- Função de Teleporte
+Tabs.Teleport:AddButton({
+    Name = "Teleportar",
+    Callback = function()
+        if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local localPlayer = game.Players.LocalPlayer
+            if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame
+                print("Teleportado para o jogador selecionado.")
+            end
+        end
+    end
+})
+
+-- Função Flingar
+Tabs.Teleport:AddButton({
+    Name = "Flingar",
+    Callback = function()
+        flingActive = not flingActive
+
+        if flingActive then
+            print("Flingar ativado")
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/FlingAtivar"))()
+
+            task.spawn(function()
+                while flingActive do
+                    if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                        local localPlayer = game.Players.LocalPlayer
+                        if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                            localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame
+                        end
+                    end
+                    wait(0.1)
+                end
+            end)
+        else
+            print("Flingar desativado")
+            local localPlayer = game.Players.LocalPlayer
+            if localPlayer.Character then
+                localPlayer.Character:BreakJoints()
+                print("Personagem resetado")
+            end
+        end
+    end
+})
+
+-- Função ESP
+Tabs.ESP:AddButton({
+    Name = "Ativar ESP",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP"))()
+    end
+})
+
+-- Função Kill
+Tabs.Kill:AddButton({
+    Name = "Kill",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Kill"))()
+    end
+})
+
+-- Teleporte para o sofá
+Tabs.Teleport:AddButton({
+    Name = "Pegar Sofá",
+    Callback = function()
+        local localPlayer = game.Players.LocalPlayer
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-86.366, 19.110, -129.395)
+            print("Teleportado para o sofá")
+        else
+            print("Erro: HumanoidRootPart não encontrado.")
+        end
+    end
+})
+
+-- Inventário do jogador
+Tabs.Inventory:AddButton({
+    Name = "Pegar Todos os Itens",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        local backpack = player.Backpack
+        for _, item in pairs(backpack:GetChildren()) do
+            item.Parent = player.Character
+        end
+        print("Itens movidos para o personagem.")
+    end
+})
+
+-- Save Manager e Interface Manager
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+SaveManager:SetFolder("FluentScriptHub")
+InterfaceManager:SetFolder("FluentScriptHub/specific-game")
+
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+SaveManager:LoadAutoloadConfig()
+
+-- Notificar o usuário
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "O script foi carregado com sucesso.",
+    Duration = 8
+})
