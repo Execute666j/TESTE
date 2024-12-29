@@ -1,134 +1,648 @@
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
-local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+loadstring(jogo:HttpGet("https://pastebin.com/raw/bGHGPcT1"))()
 
-local Window = Fluent:CreateWindow({
-    Title = "Mac Hub - Fluent",
-    SubTitle = "by dawid",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
-    Acrylic = true,
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl
+argumentos locais = {
+            [1] = "Ferramentas de Seleção",
+            [2] = "Sofá"
+        }
+        jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+
+local OrionLib = loadstring(jogo:HttpGet("https://pastebin.com/raw/0YuQQ9WS"))()
+Janela local = OrionLib:MakeWindow({Nome = "IGORPoint Premium⚡☃️", HidePremium = false, IntroText = "Studio ScarFe❤", SaveConfig = true, ConfigFolder = "Studio Igor"})
+
+-- Lista de seleção de jogadores para "Goto"
+local gotoPlayerList = {}
+local selecionadoGotoPlayer = nulo
+aviso localToggle = falso
+
+função local updatePlayerList()
+gotoPlayerList = {}
+para _, jogador em ipairs(game.Players:GetPlayers()) faça
+tabela.insert(gotoPlayerList, jogador.Nome)
+fim
+fim
+
+atualizarPlayerList()
+
+-- Adicione um ListPlayer para selecionar o jogador alvo para "Goto"
+Guia local = Janela:CriarGuia({
+Nome = "Jogadores | Brookhaven ",
+Ícone = "rbxassetid://414904019",
+PremiumOnly = falso
 })
 
--- Variável para controlar o estado do Flingar
-local flingActive = false
-local selectedPlayer = nil
+-- Adicionar botões à aba Flings
+Guia:AdicionarBotão({
+    Nome = "Sofá Pegar (OBRIGATÓRIO)",
+    Description = "E Obrigatório o Uso do sofá pra o matar",
+    Retorno de chamada = função()
+        argumentos locais = {
+            [1] = "Ferramentas de Seleção",
+            [2] = "Sofá"
+        }
+        jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
+        print('Olá!')
+    fim
+})
 
--- Criar as abas principais
-local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "" }),
-    Teleporte = Window:AddTab({ Title = "Teleporte", Icon = "teleport" }),
-    Inventory = Window:AddTab({ Title = "Inventário", Icon = "inventory" }),
-    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+Guia:AdicionarListaSuspensa({
+Nome = "Lista de Jogadores",
+Description = "Selecione o jogador alvo para o Goto (couch)",
+Opções = gotoPlayerList,
+Retorno de chamada = função(playerName)
+selectedGotoPlayer = nomedojogador
+fim
+})
+
+-- Adicionar botão para redefinir a lista de jogadores
+Guia:AdicionarBotão({
+Nome = "Redefinir lista de jogadores",
+Retorno de chamada = função()
+atualizarPlayerList()
+playerDropdown:Atualizar(gotoPlayerList, true)
+fim
+})
+
+-- Adicionar alternar para visualização
+Guia:AdicionarAlternar({
+Nome = "Exibir",
+Padrão = falso,
+Retorno de chamada = função(estado)
+viewToggle = estado
+se viewToggle e selectedGotoPlayer então
+jogador local = jogo.Jogadores:FindFirstChild(selectedGotoPlayer)
+se jogador então
+jogo.Workspace.CurrentCamera.CameraSubject = jogador.Personagem.Humanoide
+outro
+print("Jogador não encontrado.")
+fim
+outro
+jogo.Workspace.CurrentCamera.CameraSubject = jogo.Jogadores.LocalPlayer.Personagem.Humanoide
+fim
+fim
+})
+
+-- Adicionar toggle para seguir
+Guia:AdicionarAlternar({
+Nome = "Seguir",
+Padrão = falso,
+Retorno de chamada = função(estado)
+followToggle = estado
+enquanto seguirAlternar fazer
+se selecionadoGotoPlayer então
+jogador local = jogo.Jogadores:FindFirstChild(selectedGotoPlayer)
+se jogador então
+jogo.Jogadores.JogadorLocal.Personagem.ParteRaizHumanoide.CFrame = jogador.Personagem.ParteRaizHumanoide.CFrame
+outro
+print("Jogador não encontrado.")
+fim
+fim
+espere(0,1)
+fim
+fim
+})
+
+-- Adicione o botão "Goto" à seção "View/Goto"
+Guia:AdicionarBotão({
+Nome = "Ir para",
+Descrição = "Este jogador não está na lista",
+Retorno de chamada = função()
+se selecionadoGotoPlayer então
+jogador local = jogo.Jogadores:FindFirstChild(selectedGotoPlayer)
+se jogador então
+jogo.Jogadores.JogadorLocal.Personagem.ParteRaizHumanoide.CFrame = jogador.Personagem.ParteRaizHumanoide.CFrame
+outro
+print("Jogador não encontrado.")
+fim
+outro
+print("Nenhum jogador selecionado para o Goto.")
+fim
+fim
+})
+
+-- Conectar eventos de jogador removido
+jogo.Jogadores.JogadorRemovendo:Conectar(função(jogador)
+atualizarPlayerList()
+se avisoAlternar então
+OrionLib:MakeNotification({
+Nome = "Aviso",
+Content = player.Name .. "saiu do jogo",
+Imagem = "rbxassetid://4483345998",
+Tempo = 5
+})
+fim
+fim)
+
+-- Conectar eventos de jogador adicionado
+jogo.Jogadores.JogadorAdicionado:Conectar(função(jogador)
+atualizarPlayerList()
+se avisoAlternar então
+OrionLib:MakeNotification({
+Nome = "Aviso",
+Content = player.Name .. "entrou no jogo",
+Imagem = "rbxassetid://4483345998",
+Tempo = 5
+})
+fim
+fim)
+
+-- Função para manter a lista de jogadores atualizada
+função local maintainPlayerList()
+enquanto espera(1) faça
+atualizarPlayerList()
+fim
+fim
+
+-- Iniciar a função de manutenção da lista de jogadores
+spawn(manterListaDeJogadores)
+
+-- Adicionar alternância para avisos
+Guia:AdicionarAlternar({
+Nome = "Avisos",
+Padrão = falso,
+Retorno de chamada = função(estado)
+avisoToggle = estado
+fim
+})
+
+Seção local = Guia:AdicionarSeção({
+Nome = "MATAR JOGADOR"
+})
+local selecionadoKillAdvancedPlayer = nulo
+sofá localEquipped = falso
+
+função local killAdvancedPlayer()
+se selecionadoKillAdvancedPlayer então
+jogador local = jogo.Jogadores:FindFirstChild(selectedKillAdvancedPlayer)
+se jogador então
+-- Equipa o item 'Sofá' no inventário se ainda não estiver equipado
+mochila local = jogo.Jogadores.JogadorLocal.Mochila
+se mochila e não sofáEquipado então
+sofá local = mochila:FindFirstChild("Sofá")
+se sofá então
+jogo.Jogadores.JogadorLocal.Personagem.Humanoide:EquipTool(sofá)
+couchEquipped = verdadeiro
+outro
+print("O item 'Couch' não foi encontrado em seu inventário.")
+fim
+fim
+
+-- Looping de teleportes no jogador selecionado da lista
+enquanto verdadeiro faça
+jogo.Jogadores.JogadorLocal.Personagem.ParteRaizHumanoide.CFrame = jogador.Personagem.ParteRaizHumanoide.CFrame
+wait(0.0) -- Intervalo entre cada teletransporte, ajuste conforme necessário
+
+-- Verifique se o jogador sentou no 'Sofá' e realize o teletransporte para o céu
+se player.Character:FindFirstChild("Humanoid") e player.Character.Humanoid.SeatPart então
+player.Character.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0) -- Teleporte para cima
+wait(0.0) -- Espera um pouco antes de se teletransportar de volta para evitar bugs
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, 0, 0) -- Teleporte para cima novamente
+wait(0.0) -- Espera um pouco antes de se teletransportar de volta para evitar bugs
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(649.78, -439.87, 126.35) -- Teleporte de volta para a posição original
+break -- Sai do loop após teletransportar de volta
+fim
+fim
+
+-- Remove o item 'Couch' da mão do jogador após o teletransporte para o céu
+se sofáEquipado então
+mochila local = jogo.Jogadores.JogadorLocal.Mochila
+se mochila então
+sofá local = mochila:FindFirstChild("Sofá")
+se sofá então
+couch.Parent = nil -- Remove o 'Couch' do inventário
+couchEquipped = falso
+fim
+fim
+fim
+outro
+print("Jogador não encontrado.")
+fim
+outro
+print("Nenhum jogador selecionado para o Bring Avançado.")
+fim
+fim
+
+-- Lista de Jogadores para Bring Avançado
+local matarListaDeJogadoresAvançados = {}
+para _, jogador em ipairs(game.Players:GetPlayers()) faça
+tabela.insert(killAdvancedPlayerList, jogador.Nome)
+fim
+
+Guia:AdicionarListaSuspensa({
+Nome = "Selecionar Jogador",
+Description = "Selecione o jogador alvo para o Bring Avançado",
+Opções = killAdvancedPlayerList,
+Retorno de chamada = função(playerName)
+selectedKillAdvancedPlayer = nomedojogador
+fim
+})
+
+Guia:AdicionarBotão({
+Name = "KILL (ative A animacão Deite-se)",
+Description = "Equipa o item 'Sofá' e teletransporta o jogador selecionado",
+Retorno de chamada = função()
+matarJogadorAvançado()
+fim
+})
+
+Guia:AdicionarBotão({
+Nome = "Puxar Todos (Trollar)",
+     Retorno de chamada = função()
+     --KK
+     
+     argumentos locais = {
+    [1] = "LimparTodasAsFerramentas"
 }
 
--- -------------------- Função Flingar --------------------
-local function FlingarJogador()
-    flingActive = not flingActive
+jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Clea1rTool1s"):FireServer(unpack(args))
 
-    if flingActive then
-        print("Flingar ativado")
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/FlingAtivar"))()
+	--Item de sofá
+	
+	argumentos locais = {
+    [1] = "Ferramentas de Seleção",
+    [2] = "Sofá"
+}
+ 
+jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Too1l"):InvokeServer(unpack(args))
 
-        task.spawn(function()
-            while flingActive do
-                if selectedPlayer and selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                    local localPlayer = game.Players.LocalPlayer
-                    if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                        localPlayer.Character.HumanoidRootPart.CFrame = selectedPlayer.Character.HumanoidRootPart.CFrame
-                    end
-                end
-                wait(0.1)
-            end
-        end)
-    else
-        print("Flingar desativado")
-        local localPlayer = game.Players.LocalPlayer
-        if localPlayer.Character then
-            localPlayer.Character:BreakJoints()
-            print("Personagem resetado")
-        end
-    end
-end
+--Jogue tudo
 
--- -------------------- Seção Teleporte --------------------
-Tabs.Teleporte:AddButton({
-    Title = "Teleportar para Jogador",
-    Callback = function()
-        selectedPlayer = game.Players:GetPlayers()[2]
-        if selectedPlayer and selectedPlayer.Character then
-            local charRoot = selectedPlayer.Character:FindFirstChild("HumanoidRootPart")
-            if charRoot then
-                local localPlayer = game.Players.LocalPlayer
-                if localPlayer.Character then
-                    localPlayer.Character.HumanoidRootPart.CFrame = charRoot.CFrame
-                    print("Teleportado para o jogador.")
-                end
-            end
-        end
-    end
+loadstring(jogo:HttpGet("https://pastebin.com/raw/zqyDSUWX"))()
+   fim
 })
 
-Tabs.Teleporte:AddButton({
-    Title = "Ativar ESP",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP"))()
-    end
+Seção local = Guia:AdicionarSeção({
+Name = "Kill V2 [!] PODE CONTER ERROS"
 })
 
-Tabs.Teleporte:AddButton({
-    Title = "Usar Kill",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Kill"))()
-    end
+
+-- Serviços necessários
+playerService local = jogo:GetService('Jogadores')
+runService local = jogo:GetService('RunService')
+local localPlayer = playerService.LocalPlayer
+mochila local = localPlayer:FindFirstChildOfClass('Mochila')
+
+-- Variáveis globais
+flingV14Toggle local = falso
+local selecionadoFlingPlayerV14 = nulo
+fling localV14Connection
+jogador localSpawnedConnection
+spinFlingConnection local
+corpo localThrust
+
+-- Função para obter a lista de jogadores
+função local getPlayerList()
+    lista de jogadores local = {}
+    para _, jogador em ipairs(playerService:GetPlayers()) faça
+        se jogador ~= localPlayer então
+            tabela.insert(playerList, jogador.Nome)
+        fim
+    fim
+    retornar playerList
+fim
+
+-- Função para atualizar o menu suspenso
+função local updateDropdown(suspenso)
+    UpdateDropdown(lista suspensa, obterListaDeJogadores())
+fim
+
+-- Função para equipar o item "Sofá"
+função local equipCouch()
+    print("Tentando equipar o sofá...")
+    se mochila então
+        local couchItem = mochila:FindFirstChild("Sofá")
+        se couchItem então
+            couchItem.Parent = localPlayer.Character
+            humanoide local = localPlayer.Character:FindFirstChildOfClass("Humanoide")
+            se humanóide então
+                humanoide:EquipTool(couchItem)
+                print("Sofá equipado.")
+            outro
+                print("Humanoide não encontrado.")
+            fim
+        outro
+            warning("Sofá não encontrado na mochila.")
+        fim
+    outro
+        print("Mochila não encontrada.")
+    fim
+fim
+
+-- Função para teletransportar para uma coordenada
+função local teleportToCoordinate()
+    print("Teleportando para uma coordenada...")
+    local teleportPosition = Vector3.new(-499.00, -783.95, 239.72) -- Coordenada para onde você deseja se teletransportar
+    localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(teleportPosition)
+fim
+
+-- Função para arremessar o jogador (V14)
+função local flingV14(targetPlayerName)
+    local targetPlayer = playerService:FindFirstChild(targetPlayerName)
+    se targetPlayer e targetPlayer.Character e targetPlayer.Character:FindFirstChild("HumanoidRootPart") então
+        -- Looping de teleportes no jogador selecionado
+        flingV14Connection = runService.Heartbeat:Connect(função()
+            se targetPlayer e targetPlayer.Character e targetPlayer.Character:FindFirstChild("HumanoidRootPart") então
+                posição-alvo local = targetPlayer.Character.HumanoidRootPart.CFrame
+                      se alternar então
+                    -- Teleportando uma unidade para cima
+                    localPlayer.Character.HumanoidRootPart.CFrame = posição_alvo * CFrame.new(0, 2, 0)
+                outro
+                    -- Teleportando uma unidade para baixo
+                    localPlayer.Character.HumanoidRootPart.CFrame = posição-alvo * CFrame.new(0, -1, 0)
+                fim
+                alternar = não alternar
+            fim
+
+            -- Verifique se o usuário sentou no 'SeatCouch' e realize o teletransporte para a coordenada
+            se targetPlayer.Character:FindFirstChild("Humanoid") e targetPlayer.Character.Humanoid.SeatPart então
+                teleportToCoordinate()
+                flingV14Connection:Desconectar()
+                flingV14Connection = nulo
+            fim
+        fim)
+    outro
+        print("Jogador alvo não encontrado ou inválido.")
+    fim
+fim
+
+-- Função para detectar quando o jogador renasce
+função local onPlayerRespawned(targetPlayer)
+    se flingV14Toggle então
+        -- Aguardar o renascimento do jogador
+        playerSpawnedConnection = targetPlayer.CharacterAdded:Connect(função()
+            wait(0.0) -- Tempo para garantir que o personagem esteja totalmente carregado
+            se flingV14Toggle então
+                equipCouch() -- Equipar o sofá quando o jogador renasce
+                flingV14(jogadoralvo.Nome)
+            fim
+        fim)
+    fim
+fim
+
+-- Função para verificar e equipar o sofá caso não esteja equipado
+função local ensureCouchEquipped()
+    caractere local = localPlayer.Character
+    se personagem então
+        local equipado = falso
+        para _, ferramenta em ipairs(character:GetChildren()) faça
+            se ferramenta:IsA("Ferramenta") e ferramenta.Nome == "Sofá" então
+                equipado = verdadeiro
+                quebrar
+            fim
+        fim
+        se não estiver equipado então
+            equiparSofá()
+        fim
+    outro
+        print("Personagem não encontrada.")
+    fim
+fim
+
+-- Função para desativar as colisões do personagem
+função local disableCollisions(caractere)
+    se personagem e personagem:FindFirstChild("Cabeça") e personagem:FindFirstChild("Torso Superior") e personagem:FindFirstChild("Torso Inferior") e personagem:FindFirstChild("ParteRaizHumanóide") então
+        personagem.Cabeça.CanCollide = falso
+        personagem.UpperTorso.CanCollide = falso
+        personagem.LowerTorso.CanCollide = falso
+        personagem.HumanoidRootPart.CanCollide = falso
+    outro
+        print("Parte do personagem não encontrada.")
+    fim
+fim
+
+-- Função para reativar as colisões do personagem
+função local resetCollisions(caractere)
+    se personagem e personagem:FindFirstChild("Cabeça") e personagem:FindFirstChild("Torso Superior") e personagem:FindFirstChild("Torso Inferior") e personagem:FindFirstChild("ParteRaizHumanóide") então
+        personagem.Head.CanCollide = verdadeiro
+        personagem.UpperTorso.CanCollide = verdadeiro
+        personagem.LowerTorso.CanCollide = verdadeiro
+        personagem.HumanoidRootPart.CanCollide = verdadeiro
+    fim
+fim
+
+-- Função para ativar o Spin Fling
+função local activateSpinFling()
+    caractere local = localPlayer.Character ou localPlayer.CharacterAdded:Wait()
+    poder local = 1500 -- Pode ajustar isso para alterar a força do impulso
+
+    -- Cria um novo BodyThrust
+    bodyThrust = Instância.new("BodyThrust")
+    bodyThrust.Parent = personagem.HumanoidRootPart
+    bodyThrust.Force = Vector3.new(potência, 1100, potência)
+    bodyThrust.Location = personagem.HumanoidRootPart.Position
+
+    -- Desativa as colisões
+    spinFlingConnection = runService.Stepped:Connect(função()
+        disableCollisions(caractere)
+    fim)
+
+    print("Spin Fling ativado!")
+fim
+
+-- Função para desativar o Spin Fling
+função local deactivateSpinFling()
+    caractere local = localPlayer.Character ou localPlayer.CharacterAdded:Wait()
+
+    -- Desconecta a função de desativação de colisões
+    se spinFlingConnection então
+        spinFlingConnection:Desconectar()
+        spinFlingConnection = nulo
+    fim
+
+    -- Remover o efeito de impulso do corpo
+    se bodyThrust então
+        bodyThrust:Destruir()
+        bodyThrust = nulo
+    fim
+
+    -- Restaura as colisões do personagem
+    resetCollisions(caractere)
+
+    print("Spin Fling desativado!")
+fim
+
+-- Função de retorno de chamada para alternar
+função local onFlingV14Toggle(valor)
+    print("Alternar Fling V14:", valor)
+    flingV14Toggle = valor
+    se flingV14Toggle e selecionadoFlingPlayerV14 então
+        local targetPlayer = playerService:FindFirstChild(selectedFlingPlayerV14)
+        se targetPlayer então
+            garantirCouchEquipped() -- Equipar o sofá ao ativar ou alternar
+            flingV14(jogadoralvo.Nome)
+            onPlayerRespawned(jogadoralvo)
+            activateSpinFling() -- Ativa o Spin Fling quando o toggle é ativado
+        fim
+    elseif não flingV14Toggle então
+        --Desconecte as conexões quando o toggle estiver desativado
+        se flingV14Connection então
+            flingV14Connection:Desconectar()
+            flingV14Connection = nulo
+        fim
+        se playerSpawnedConnection então
+            playerSpawnedConnection:Desconectar()
+            playerSpawnedConnection = nulo
+        fim
+        deactivateSpinFling() -- Desativa o Spin Fling quando o toggle está desativado
+    fim
+fim
+
+-- Menu suspenso para selecionar o jogador
+Guia:AdicionarListaSuspensa({
+    Name = "Selecione o Jogador para Fling",
+    Opções = getPlayerList(),
+    Padrão = "",
+    Retorno de chamada = função(playerName)
+        selectedFlingPlayerV14 = nomedojogador
+        print("Jogador selecionado para Fling:", playerName)
+    fim
 })
 
-Tabs.Teleporte:AddButton({
-    Title = "Abrir Fly",
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/mikeexc/Dsc-Mike-Fly-Gui/main/Fly%20Gui"))()
-    end
+-- Atualiza a lista de jogadores quando os jogadores entram ou saem do jogo
+playerService.PlayerAdded:Conectar(função()
+    print("Novo jogador adicionado. Atualizando a lista...")
+    updateDropdown(PlayerDropdown)
+fim)
+
+playerService.PlayerRemoving:Connect(função()
+    print("Jogador saiu. Atualizando a lista...")
+    updateDropdown(PlayerDropdown)
+fim)
+
+-- Alternar para ativar/desativar o Fling
+Guia:AdicionarAlternar({
+    Name = "Matar Jogador Selecionado!",
+    Padrão = falso,
+    Retorno de chamada = função(valor)
+        print("Alternar Fling V14:", valor)
+        flingV14Toggle = valor
+        se flingV14Toggle e selecionadoFlingPlayerV14 então
+            local targetPlayer = playerService:FindFirstChild(selectedFlingPlayerV14)
+            se targetPlayer então
+                garantirCouchEquipped() -- Equipar o sofá ao ativar ou alternar
+                flingV14(jogadoralvo.Nome)
+                onPlayerRespawned(jogadoralvo)
+                activateSpinFling() -- Ativa o Spin Fling quando o toggle é ativado
+            fim
+        elseif não flingV14Toggle então
+            --Desconecte as conexões quando o toggle estiver desativado
+            se flingV14Connection então
+                flingV14Connection:Desconectar()
+                flingV14Connection = nulo
+            fim
+            se playerSpawnedConnection então
+                playerSpawnedConnection:Desconectar()
+                playerSpawnedConnection = nulo
+            fim
+            deactivateSpinFling() -- Desativa o Spin Fling quando o toggle está desativado
+        fim
+    fim
 })
 
-Tabs.Teleporte:AddButton({
-    Title = "Flingar Jogador",
-    Callback = FlingarJogador
+local avTab = Janela:CriarTab({
+Nome = "Avatar | Brookhaven",
+Ícone = "rbxassetid://414904019",
+PremiumOnly = falso
 })
 
--- -------------------- Seção Inventário --------------------
-Tabs.Inventory:AddButton({
-    Title = "Pegar Todos os Itens",
-    Callback = function()
-        local player = game.Players.LocalPlayer
-        if player then
-            local backpack = player.Backpack
-            for _, item in pairs(backpack:GetChildren()) do
-                item.Parent = player.Character
-            end
-            print("Itens movidos ao personagem.")
-        end
-    end
+avTab:AdicionarAlternar({
+Name = "Mudar de cor Automaticamente",
+Padrão = falso,
+Retorno de chamada = função(valor)
+isActive = valor
+enquanto isActive faz
+cores locais = {"Berinjela", "Cinza pedra médio", "Nougat escuro", "Vermelho real", "Amarelo novo", "Verde limão", "Pasta de dente", "Marrom sujo"}
+para _, cor em ipairs(cores) faça
+argumentos locais = {
+[1] = "tom de pele",
+[2] = cor
+}
+jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Updat1eAvata1r"):FireServer(unpack(args))
+wait(1) -- espera 1 segundo entre as execuções
+fim
+fim
+fim
 })
 
--- Salvamento e Interface Manager
-SaveManager:SetLibrary(Fluent)
-InterfaceManager:SetLibrary(Fluent)
+avTab:AdicionarBotão({
+Nome = "Virar Pó Brilhante",
+     Retorno de chamada = função()
+     --Tamanho
+     
+     argumentos locais = {
+    [1] = "Tamanho do caractere reduzido",
+    [2] = 4
+}
 
-SaveManager:SetFolder("HubConfig")
-SaveManager:LoadAutoloadConfig()
+jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Clothe1s"):FireServer(unpack(args))
 
-InterfaceManager:SetFolder("FluentGameConfig")
-SaveManager:IgnoreThemeSettings()
+--Item
 
-InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+argumentos locais = {
+    [1] = "desgaste",
+    [2] = 173624651
+}
 
-Window:SelectTab(1)
+jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Updat1eAvata1r"):FireServer(unpack(args))
 
--- Notificação inicial
-Fluent:Notify({
-    Title = "Hub Carregado",
-    Content = "Interface Fluent pronta para uso.",
-    Duration = 5
+--outro
+
+argumentos locais = {
+    [1] = "desgaste",
+    [2] = 141742418
+}
+
+jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Updat1eAvata1r"):FireServer(unpack(args))
+fim
 })
+Seção local = avTab:AddSection({
+	Nome = "Extras"
+})
+avTab:AdicionarBotão({
+Nome = "Virar Assassino",
+	Retorno de chamada = função()
+	--Assassino
+
+	argumentos locais = {
+    [1] = "desgaste",
+    [2] = 15133320948
+}
+
+jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Updat1eAvata1r"):FireServer(unpack(args))
+fim
+})
+avTab:AdicionarBotão({
+Nome = "Babiromet do davi scripts",
+	Retorno de chamada = função()
+	--Assassino
+
+	argumentos locais = {
+    [1] = "Alteração de Personagem",
+    [2] = {
+        [1] = 14731377941,
+        [2] = 14731377894,
+        [3] = 14731377875,
+        [4] = 14731384498,
+        [5] = 14731377938,
+        [6] = 0
+    },
+    [3] = "Inseto-pau"
+}
+
+jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Avata1rOrigina1l"):FireServer(descompactar(args))
+
+--Homem
+
+argumentos locais = {
+    [1] = "desgaste",
+    [2] = 6564572490
+}
+
+jogo:GetService("ReplicatedStorage").RE:FindFirstChild("1Updat1eAvata1r"):FireServer(unpack(args))
+
+--velocidade
+
+jogo.Jogadores.JogadorLocal.Personagem.Humanoide.VelocidadeDeCaminhada = 90
+fim
+})
+avTab:AdicionarBotão({
+Nome =
