@@ -2,6 +2,7 @@ local power = 1000  -- Força ajustada para 1000
 local activeFling = false
 local flingForce = nil
 
+-- Função para desativar o Fling
 local function stopFling()
     if flingForce and flingForce.Parent then
         flingForce:Destroy()
@@ -11,20 +12,41 @@ local function stopFling()
     end
 end
 
--- Ativa o Fling
-local character = game.Players.LocalPlayer.Character
-if character and character:FindFirstChild("HumanoidRootPart") then
-    local humanoRootPart = character.HumanoidRootPart
+-- Função para ativar o Fling
+local function activateFling(character)
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        local humanoRootPart = character.HumanoidRootPart
 
-    -- Caso o Fling já esteja ativo, desativa primeiro
-    if activeFling then stopFling() end
+        -- Caso o Fling já esteja ativo, desativa primeiro
+        if activeFling then stopFling() end
 
-    -- Cria o FlingForce e aplica ao HumanoidRootPart
-    flingForce = Instance.new("BodyThrust")
-    flingForce.Parent = humanoRootPart
-    flingForce.Force = Vector3.new(power, 0, power) -- Força aumentada para 1000
-    flingForce.Location = humanoRootPart.Position
+        -- Cria o FlingForce e aplica ao HumanoidRootPart
+        flingForce = Instance.new("BodyThrust")
+        flingForce.Parent = humanoRootPart
+        flingForce.Force = Vector3.new(power, 0, power) -- Força aumentada para 1000
+        flingForce.Location = humanoRootPart.Position
 
-    activeFling = true
-    print("Fling ativado com força de " .. power)
+        activeFling = true
+        print("Fling ativado com força de " .. power)
+    end
 end
+
+-- Função para monitorar o jogador e reaplicar o Fling após a morte
+local function monitorFling()
+    local player = game.Players.LocalPlayer
+
+    -- Listener para reaplicar o Fling quando o personagem mudar
+    player.CharacterAdded:Connect(function(newCharacter)
+        -- Aguarda o carregamento completo do personagem
+        newCharacter:WaitForChild("HumanoidRootPart")
+        activateFling(newCharacter)
+    end)
+
+    -- Aplica o Fling ao personagem atual
+    if player.Character then
+        activateFling(player.Character)
+    end
+end
+
+-- Inicia o monitoramento
+monitorFling()
