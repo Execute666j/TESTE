@@ -1,4 +1,4 @@
-local power = 14000  -- Força ajustada para 1000
+local power = 5000  -- Força ajustada para 1000
 local activeFling = false
 local flingForce = nil
 
