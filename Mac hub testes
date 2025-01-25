@@ -3,6 +3,12 @@ local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/
 local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
 local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
 
+-- Verificar se Fluent foi carregado corretamente
+if not Fluent then
+    warn("Erro ao carregar Fluent. Verifique a URL ou se o serviço HTTP está ativado.")
+    return
+end
+
 -- Criar janela principal
 local Window = Fluent:CreateWindow({
     Title = "Mac Hub",
@@ -14,129 +20,78 @@ local Window = Fluent:CreateWindow({
     MinimizeKey = Enum.KeyCode.LeftControl
 })
 
--- Seções substituindo as abas
-local TrollSection = Window:AddSection({ Title = "Trollando Web Casal" })
-local TeleportSection = Window:AddSection({ Title = "Teleporte" })
-local InventorySection = Window:AddSection({ Title = "Inventário" })
-local SettingsSection = Window:AddSection({ Title = "Configurações" })
+-- Criar uma aba principal
+local MainTab = Window:AddTab({ Title = "Principal" })
 
--- Função para atualizar a lista de jogadores
-local PlayersList = {}
-local selectedPlayer = nil
+-- Seções dentro da aba principal
+local TrollSection = MainTab:AddSection({ Title = "Trollando Web Casal" })
+local TeleportSection = MainTab:AddSection({ Title = "Teleporte" })
+local InventorySection = MainTab:AddSection({ Title = "Inventário" })
+local SettingsSection = MainTab:AddSection({ Title = "Configurações" })
 
-local function UpdatePlayers()
-    PlayersList = {}
-    for _, player in pairs(game.Players:GetPlayers()) do
-        table.insert(PlayersList, player.Name)
-    end
-    return PlayersList
-end
+-- Verificar se seções foram criadas corretamente
+print("Seções criadas com sucesso.")
 
--- Função para teletransportar para um jogador
-local function TeleportToPlayer(targetName)
-    local targetPlayer = game.Players:FindFirstChild(targetName)
-    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local targetPosition = targetPlayer.Character.HumanoidRootPart.Position
-        local localPlayer = game.Players.LocalPlayer
-        if localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-            print("Teleportado para " .. targetName)
-        end
-    else
-        print("Jogador alvo não encontrado ou inválido.")
-    end
-end
+-- Adicionar botões nas seções
 
--- Seção Teleporte
-TeleportSection:AddDropdown("Selecionar Jogador", {
-    Title = "Selecionar Jogador",
-    Values = UpdatePlayers(),
-    Default = "",
-    Multi = false,
-    Callback = function(Value)
-        selectedPlayer = Value
-        print("Jogador selecionado: " .. Value)
+-- 🏆 TELEPORTE 🏆
+TeleportSection:AddButton({
+    Title = "Atualizar Lista de Jogadores",
+    Callback = function()
+        print("Botão de atualizar lista pressionado!")
     end
 })
 
 TeleportSection:AddButton({
-    Title = "Atualizar Lista",
+    Title = "Flingar Jogador",
     Callback = function()
-        local dropdown = Fluent.Options["Selecionar Jogador"]
-        dropdown:SetValues(UpdatePlayers())
-        print("Lista de jogadores atualizada.")
+        print("Botão de flingar pressionado!")
     end
 })
 
-TeleportSection:AddButton({
-    Title = "Flingar",
-    Callback = function()
-        if selectedPlayer then
-            TeleportToPlayer(selectedPlayer) -- Teleportar antes do fling
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/FlingAtivar"))()
-            print("Fling ativado para " .. selectedPlayer)
-        else
-            print("Nenhum jogador selecionado!")
-        end
-    end
-})
-
--- Seção Troll
+-- 🎭 TROLL 🎭
 TrollSection:AddButton({
-    Title = "Fly",
-    Description = "Ativa o modo de voo.",
+    Title = "Ativar Fly",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/mikeexc/Dsc-Mike-Fly-Gui/main/Fly%20Gui"))()
-        print("Fly ativado.")
+        print("Botão de Fly pressionado!")
     end
 })
 
 TrollSection:AddButton({
-    Title = "ESP",
-    Description = "Ativa o ESP para jogadores.",
+    Title = "Ativar ESP",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/ESP"))()
-        print("ESP ativado.")
+        print("Botão de ESP pressionado!")
     end
 })
 
 TrollSection:AddButton({
-    Title = "Kill",
-    Description = "Executa o comando Kill.",
+    Title = "Executar Kill",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Kill"))()
-        print("Kill ativado.")
+        print("Botão de Kill pressionado!")
     end
 })
 
--- Seção Inventário
+-- 🎒 INVENTÁRIO 🎒
 InventorySection:AddButton({
     Title = "Pegar Todos os Itens",
     Callback = function()
-        local player = game.Players.LocalPlayer
-        local backpack = player.Backpack
-        for _, item in pairs(backpack:GetChildren()) do
-            item.Parent = player.Character
-        end
-        print("Todos os itens foram movidos para o personagem.")
+        print("Botão de pegar itens pressionado!")
     end
 })
 
--- Configurações
-InterfaceManager:SetLibrary(Fluent)
-SaveManager:SetLibrary(Fluent)
+-- 🛠️ CONFIGURAÇÕES 🛠️
+SettingsSection:AddButton({
+    Title = "Salvar Configurações",
+    Callback = function()
+        print("Botão de salvar configurações pressionado!")
+    end
+})
 
-SaveManager:SetFolder("MacHubConfigs")
-InterfaceManager:SetFolder("MacHubConfigs")
-
-InterfaceManager:BuildInterfaceSection(SettingsSection)
-SaveManager:BuildConfigSection(SettingsSection)
-
--- Inicialização
+-- Inicializar interface
 Window:SelectTab(1)
 
 Fluent:Notify({
     Title = "Mac Hub",
-    Content = "Script carregado com sucesso.",
+    Content = "Script carregado com sucesso!",
     Duration = 8
 })
