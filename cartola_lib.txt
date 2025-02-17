@@ -1,10 +1,10 @@
 local Configs_HUB = {
-  Cor_Hub = Color3.fromRGB(12, 50, 40),       -- Verde escuro (fundo do hub)
-  Cor_Options = Color3.fromRGB(15, 60, 50),   -- Verde médio (opções/botões)
-  Cor_Stroke = Color3.fromRGB(25, 85, 70),    -- Verde mais claro (bordas)
-  Cor_Text = Color3.fromRGB(255, 255, 255),   -- Branco (texto principal)
-  Cor_DarkText = Color3.fromRGB(180, 240, 180), -- Verde médio para texto secundário
-  Corner_Radius = UDim.new(0, 6),             -- Cantos mais arredondados
+  Cor_Hub = Color3.fromRGB(25, 30, 36),       -- Cinza escuro (fundo do hub)
+  Cor_Options = Color3.fromRGB(25, 30, 36),   -- Mesmo tom do fundo (botões/opções)
+  Cor_Stroke = Color3.fromRGB(60, 80, 100),   -- Azul acinzentado (bordas)
+  Cor_Text = Color3.fromRGB(200, 200, 200),   -- Cinza claro (texto principal)
+  Cor_DarkText = Color3.fromRGB(150, 150, 150), -- Cinza médio (texto secundário)
+  Corner_Radius = UDim.new(0, 6),             -- Cantos arredondados
   Text_Font = Enum.Font.FredokaOne            -- Fonte do texto
 }
 
