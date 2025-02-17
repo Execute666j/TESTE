@@ -1,11 +1,11 @@
 local Configs_HUB = {
-  Cor_Hub = Color3.fromRGB(15, 35, 45),       -- Azul-petróleo escuro (fundo do hub)
-  Cor_Options = Color3.fromRGB(20, 50, 60),   -- Azul-esverdeado médio (opções/botões)
-  Cor_Stroke = Color3.fromRGB(30, 90, 100),   -- Azul-petróleo mais vibrante (bordas)
-  Cor_Text = Color3.fromRGB(235, 255, 250),   -- Branco puro levemente azul (texto principal)
-  Cor_DarkText = Color3.fromRGB(200, 250, 240), -- Azul-claro mais suave para texto secundário
-  Corner_Radius = UDim.new(0, 6),             -- Cantos arredondados
-  Text_Font = Enum.Font.GothamBold            -- Fonte do texto (mais moderna e legível)
+  Cor_Hub = Color3.fromRGB(12, 50, 40),       -- Verde escuro (fundo do hub)
+  Cor_Options = Color3.fromRGB(15, 60, 50),   -- Verde médio (opções/botões)
+  Cor_Stroke = Color3.fromRGB(25, 85, 70),    -- Verde mais claro (bordas)
+  Cor_Text = Color3.fromRGB(255, 255, 255),   -- **Branco puro (texto principal)**
+  Cor_DarkText = Color3.fromRGB(220, 220, 220), -- **Cinza claro para texto secundário**
+  Corner_Radius = UDim.new(0, 6),             -- Cantos mais arredondados
+  Text_Font = Enum.Font.FredokaOne            -- Fonte do texto
 }
 
 local CoreGui = game:GetService("CoreGui")
