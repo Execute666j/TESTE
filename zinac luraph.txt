@@ -1,1 +1,1 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Execute666j/TESTE/refs/heads/main/Protected_3563185214967649.lua.txt"))()
+loadstring(game:HttpGet("https://cdn.authguard.org/virtual-file/c9b5fec8cea4495b976832420db1248c"))()
